@@ -1,0 +1,112 @@
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #45a049;
+    --background-color: #cdd8d1;
+    --box-shadow-color: rgba(0, 0, 0, 0.2);
+    --dark-background-color: #333;
+    --dark-text-color: #f2e7e7;
+    --light-text-color: #2f2e2e;
+    --light-video-box: #a1d5b8;
+    --dark-video-box: #6a8aa2;
+    --dark-secondary: #57e3a9;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  
+  #video-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 8px 0 var(--box-shadow-color);
+  }
+  
+  #video-element {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--light-video-box);
+    padding: 3px;
+    border-radius: 15px;
+  }
+  
+ #upload-button {
+  display: none;
+}
+
+  #upload-button-label,
+  #camera-toggle {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  #upload-button-label{
+    text-align: center;
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  #upload-button:hover,
+  #camera-toggle:hover {
+    background-color: var(--secondary-color);
+  }
+  
+  #dark-mode-toggle {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--dark-background-color);
+    color: var(--dark-text-color);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  #dark-mode-toggle{
+    background-color: var(--dark-text-color);
+    color: var(--dark-background-color);
+  }
+  
+  #dark-mode-toggle:hover {
+    background-color: #444;
+    color: var(--dark-text-color);
+  }
+
+body.dark-mode {
+background-color: var(--dark-background-color);
+color: var(--dark-text-color);
+}
+
+#video-element.dark-mode{
+  background-color: var(--dark-video-box);
+}
+#upload-button-label.dark-mode,
+#camera-toggle.dark-mode {
+  background-color: var(--dark-secondary);
+  color: var(--light-text-color);
+}
