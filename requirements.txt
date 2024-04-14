@@ -1,7 +1,6 @@
 streamlit==1.27.1
 numpy==1.26.4
-opencv-python==4.9.0
-cv2==4.9.0
+opencv-python-headless==4.9.0
 ultralytics
 torch==2.4.0
 torchvision
