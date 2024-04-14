@@ -32,6 +32,8 @@ import ultralytics.utils as plot
 import matplotlib.pyplot as plt
 import cv2
 from PIL import Image
+from PIL import ImageFont
+from PIL.ImageDraw import Draw
 
 # Torch
 import torch
@@ -78,13 +80,8 @@ random.seed(CFG.random_seed) # Python
 # # LOAD MODEL
 
 # %%
-localization = YOLO('yolov8n.pt')
+model = YOLO('yolov8n-pose.pt', verbose=False) 
 
-# %%
-model = YOLO('yolov8n-pose.pt') 
-
-
-# %
 # %%
 def preprocess_img(image:np.array,
                    transform = T.Resize((640,640))):
@@ -96,6 +93,9 @@ def preprocess_img(image:np.array,
     return transform(torch.Tensor(image))
 
 
+# %% [markdown]
+# # DETECTION
+
 # %%
 def detect(img):
     if img.shape[0] ==3:
@@ -103,16 +103,81 @@ def detect(img):
     else:
         h,w,_ = img.shape
 
-    print(h,w)
     revert_transform = T.Resize((h,w))
 
-    result = model(preprocess_img(img))[0]
+    result = model.predict(preprocess_img(img), conf=0.75)[0]
 
-    confidence = [float(i.boxes.conf) for i in result]
-    for r in list(result):
-        if r.boxes.conf == max(confidence):
+
+    widths = [int(i[2]) for i in result.boxes.xywh]
+    heights = [int(i[3]) for i in result.boxes.xywh]
+    areas = [int(widths[i]*heights[i]) for i in range(len(widths))]
+
+
+    for i,r in enumerate(list(result)):
+        if areas[i] == max(areas):
             im_array = r.plot(kpt_line=True, kpt_radius=10)
             im_array = revert_transform(torch.Tensor(im_array.transpose(2,0,1).reshape(1,3,640,640))).cpu().numpy().astype(np.uint8).squeeze().transpose(1,2,0)
             im_array = im_array[:,:,::-1]
-    return im_array
+
+            keypoints = r.keypoints.xy
+
+    try:
+        return im_array, keypoints[0]
+    except:
+        return img[:,:,::-1], None
+
+# %%
+def scale(x_scale, y_scale, keypoint):
+    x = keypoint[0]*x_scale
+    y = keypoint[1]*y_scale
+    return x.cpu().numpy(),y.cpu().numpy()
+
+# %%
+def arm_angle(keypoints, h, w):
+    x_scale, y_scale = w/640, h/640
+    Lshoulder = scale(x_scale, y_scale, keypoints[5])
+    Rshoulder = scale(x_scale, y_scale, keypoints[6])
+    Lelbow = scale(x_scale, y_scale, keypoints[7])
+    Relbow = scale(x_scale, y_scale, keypoints[8])
+    Lhand = scale(x_scale, y_scale, keypoints[9])
+    Rhand = scale(x_scale, y_scale, keypoints[10])
+
+    LAngle = np.arctan2(Lhand[1]-Lelbow[1], Lhand[0]-Lelbow[0]) - np.arctan2(Lshoulder[1]-Lelbow[1], Lshoulder[0]-Lelbow[0])
+    LAngle = np.abs(LAngle*180.0/np.pi)
+
+    RAngle = np.arctan2(Rhand[1]-Relbow[1], Rhand[0]-Relbow[0]) - np.arctan2(Rshoulder[1]-Relbow[1], Rshoulder[0]-Relbow[0])
+    RAngle = np.abs(RAngle*180.0/np.pi)
+
+    return LAngle, RAngle
+    
+    
+
+# %%
+def camera():
+    cap = cv2.VideoCapture(0)
+
+    while(True): 
+        ret, frame = cap.read() 
+        out, kp = detect(frame)
+        out = np.ascontiguousarray(out, dtype=np.uint8)
+        out = out[:,:,::-1]
+        out = Image.fromarray(out)
+        draw = Draw(out)
+        draw.rectangle((0,0,100,80), fill=(255,255,255))
+        if kp is not None:
+            LAngle, RAngle = arm_angle(kp, frame.shape[0], frame.shape[1])
+            draw.text((10, 10), f"Left Arm: {round(LAngle)}", fill =(0, 0, 255))
+            draw.text((10, 50), f"Right Arm: {round(RAngle)}", fill =(0, 0, 255))
+            
+        cv2.imshow('frame', np.array(out)) 
+        # Close Window with 'q'
+        if cv2.waitKey(1) & 0xFF == ord('q'): 
+            break
+    
+    cap.release() 
+    cv2.destroyAllWindows() 
+
+# %%
+
+
 
