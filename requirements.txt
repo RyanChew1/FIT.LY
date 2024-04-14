@@ -5,3 +5,4 @@ ultralytics
 torch==2.4.0
 torchvision
 torchaudio
+kagglehub
