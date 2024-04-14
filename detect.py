@@ -150,7 +150,24 @@ def arm_angle(keypoints, h, w):
 
     return LAngle, RAngle
     
-    
+def arm_lift_angle(keypoints, h, w):
+    x_scale, y_scale = w/640, h/640
+    Lshoulder = scale(x_scale, y_scale, keypoints[5])
+    Rshoulder = scale(x_scale, y_scale, keypoints[6])
+    Lhand = scale(x_scale, y_scale, keypoints[9])
+    Rhand = scale(x_scale, y_scale, keypoints[10])
+
+    Lhip = scale(x_scale, y_scale, keypoints[11])
+    Rhip = scale(x_scale, y_scale, keypoints[12])
+
+    LAngle = np.arctan2(Lhand[1]-Lshoulder[1], Lhand[0]-Lshoulder[0]) - np.arctan2(Lhip[1]-Lshoulder[1], Lhip[0]-Lshoulder[0])
+    LAngle = np.abs(LAngle*180.0/np.pi)
+
+    RAngle = np.arctan2(Rhand[1]-Rshoulder[1], Rhand[0]-Rshoulder[0]) - np.arctan2(Rhip[1]-Rshoulder[1], Rhip[0]-Rshoulder[0])
+    RAngle = np.abs(RAngle*180.0/np.pi)
+
+    return LAngle, RAngle
+
 
 # %%
 def camera():
