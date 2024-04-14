@@ -124,4 +124,6 @@ with st.form("my_form"):
         # Rep range input at column 4
         with row_input[3]:
             rep_range = st.selectbox('Rep Range', ['Low (5-8)', 'Medium (8-12)', 'High (12-15)'])
+
+    st.markdown("This may take a moment, creating a good workout takes time!")
     submitted = st.form_submit_button("Submit", on_click=lambda: on_submit(day, target, length, rep_range))
