@@ -1,8 +1,7 @@
 streamlit==1.27.1
-numpy
-pandas
-opencv-python
+numpy==1.26.4
+opencv-python==4.9.0
 ultralytics
-torch
+torch==2.4.0
 torchvision
 torchaudio
