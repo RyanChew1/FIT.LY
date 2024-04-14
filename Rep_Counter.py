@@ -7,6 +7,16 @@ from PIL import Image, ImageFont
 from PIL.ImageDraw import Draw
 # Contact page
 
+streamlit_style = """
+			<style>
+			@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+			html, body, [class*="css"]  {
+			font-family: "Bebas Neue", sans-serif;
+			}
+			</style>
+			"""
+st.markdown(streamlit_style, unsafe_allow_html=True)
 
 st.title("FIT.LY")
 stframe = st.empty()
@@ -23,10 +33,10 @@ resetter = Resetter()
 if st.button('Reset'):
     resetter.on_button_click()
 
-values = ['Curls', 'Shoulder Press', 'Lateral Raises']
+values = ['Curls', 'Lateral Raises']
 
 # Display the dropdown menu and get the user's selection
-selection = st.selectbox('Select a value', values)
+selection = st.selectbox('Select an exercise', values)
 
 
 class curls:
