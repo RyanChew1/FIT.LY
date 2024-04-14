@@ -170,31 +170,6 @@ def arm_lift_angle(keypoints, h, w):
 
 
 # %%
-def camera():
-    cap = cv2.VideoCapture(0)
-
-    while(True): 
-        ret, frame = cap.read() 
-        out, kp = detect(frame)
-        out = np.ascontiguousarray(out, dtype=np.uint8)
-        out = out[:,:,::-1]
-        out = Image.fromarray(out)
-        draw = Draw(out)
-        draw.rectangle((0,0,100,80), fill=(255,255,255))
-        if kp is not None:
-            LAngle, RAngle = arm_angle(kp, frame.shape[0], frame.shape[1])
-            draw.text((10, 10), f"Left Arm: {round(LAngle)}", fill =(0, 0, 255))
-            draw.text((10, 50), f"Right Arm: {round(RAngle)}", fill =(0, 0, 255))
-            
-        cv2.imshow('frame', np.array(out)) 
-        # Close Window with 'q'
-        if cv2.waitKey(1) & 0xFF == ord('q'): 
-            break
-    
-    cap.release() 
-    cv2.destroyAllWindows() 
-
-# %%
 
 
 
