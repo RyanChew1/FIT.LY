@@ -73,11 +73,14 @@ class curls:
         '''
         if curr == 4: # Left Bent
             if prev == 0 or prev == 2: # If previously extended
+                print("A")
                 return 1
         if curr == 3: # Right Bent
             if prev == 0 or prev == 1: # If previously extended
+                print("B")
                 return 1
         if curr == 5 and prev == 0: # Both Bent; Previously both extended
+                print("C")
                 return 1
         return 0
     
